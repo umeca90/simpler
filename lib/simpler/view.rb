@@ -10,9 +10,11 @@ module Simpler
     end
 
     def render(binding)
-      template = File.read(template_path)
-
-      ERB.new(template).result(binding)
+      if template.is_a?(Hash)
+        template.values[0]
+      else
+        render_template(binding)
+      end
     end
 
     private
@@ -35,5 +37,10 @@ module Simpler
       Simpler.root.join(VIEW_BASE_PATH, "#{path}.html.erb")
     end
 
+    def render_template(binding)
+      template = File.read(template_path)
+
+      ERB.new(template).result(binding)
+    end
   end
 end
