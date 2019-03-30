@@ -1,8 +1,10 @@
 require_relative 'view'
 
 module Simpler
-  class Controller #:nodoc:
+  class Controller
     attr_reader :name, :request, :response, :headers
+
+    CONTENT_TYPES = { plain: 'text/plain', html: 'text/html' }.freeze
 
     def initialize(env)
       @name = extract_name
@@ -22,18 +24,10 @@ module Simpler
       @response.finish
     end
 
-    def params
-      @request.env['simpler.params']
-    end
-
     private
 
-    def path_params
+    def params
       @request.env['simpler.params']
-    end
-
-    def request_params
-      @request.params
     end
 
     def status(status_code)
@@ -45,7 +39,11 @@ module Simpler
     end
 
     def set_default_headers
-      @response['Content-Type'] = plain_text? ? 'text/plain' : 'text/html'
+      @response['Content-Type'] ||= CONTENT_TYPES[set_content_type]
+    end
+
+    def set_content_type
+      @request.env['simpler.template'].nil? ? :html : @request.env['simpler.template'].keys.first
     end
 
     def write_response

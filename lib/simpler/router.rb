@@ -1,7 +1,7 @@
 require_relative 'router/route'
 
 module Simpler
-  class Router #:nodoc:
+  class Router
     def initialize
       @routes = []
     end

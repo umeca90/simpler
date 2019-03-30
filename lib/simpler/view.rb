@@ -10,14 +10,25 @@ module Simpler
     end
 
     def render(binding)
-      if template.is_a?(Hash)
-        template.values[0]
+      if @env['simpler.template'] && @env['simpler.template'][:plain]
+        render_plain
       else
-        render_template(binding)
+        render_html(binding)
+
       end
     end
 
     private
+
+    def render_plain
+      @env['simpler.template'][:plain]
+    end
+
+    def render_html(binding)
+      template = File.read(template_path)
+
+      ERB.new(template).result(binding)
+    end    
 
     def controller
       @env['simpler.controller']
@@ -37,10 +48,10 @@ module Simpler
       Simpler.root.join(VIEW_BASE_PATH, "#{path}.html.erb")
     end
 
-    def render_template(binding)
-      template = File.read(template_path)
+    #def render_template(binding)
+      #template = File.read(template_path)
 
-      ERB.new(template).result(binding)
-    end
+      #ERB.new(template).result(binding)
+    #end
   end
 end

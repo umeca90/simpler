@@ -1,6 +1,6 @@
 require 'logger'
 
-class AppLogger #:nodoc:
+class AppLogger
   def initialize(app)
     @app    = app
     @logger = Logger.new(Simpler.root.join('log/app.log'))
